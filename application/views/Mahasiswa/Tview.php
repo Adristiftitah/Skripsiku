@@ -42,7 +42,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="<?php echo base_url(); ?>index.php/DashboardAdmin/">
+                <a class="nav-link" href="<?php echo base_url(); ?>index.php/MahasiswaController/">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -57,17 +57,17 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/DashboardAdmin/mahasiswa">
+                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/MahasiswaController/inPerusahaan">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Data Perusahaan</span>
                 </a>
 
-                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/DashboardAdmin/dosen">
+                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/MahasiswaController/addpembimbing">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Pengajuan Pembimbing</span>
                 </a>
 
-                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/DashboardAdmin/perusahaan">
+                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/MahasiswaController/addproposal">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Pengajuan Proposal</span>
                 </a>

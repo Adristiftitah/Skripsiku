@@ -13,18 +13,21 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <?php $no=1; foreach ($dosen as $dt){ ?>
                                         <tr>
+                                            <th>No</th>
                                             <th>Nama Pembimbing</th>
                                             <th>Prodi Pengusul</th>
                                             <th>Jumlah Mahasiswa Bimbingan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php $no = 1; 
+                                        foreach ($dosen as $dsn) { ?>
                                         <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
+                                            <td><?php echo $no++ ?></td>
+                                            <td><?php echo $dsn->nama; ?></td>
+                                            <td><?php echo $dsn->kodeprodi; ?></td>
+                                            <td><?php echo $dsn->jumlah; ?></td>
                                         </tr>
                                         <?php } ?> 
                                     </tbody>

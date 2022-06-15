@@ -18,9 +18,12 @@ class AdminModels extends CI_Model {
             ->result();	
     }
 
-    public function pengajuan_admin()
+    public function pengajuan_admin($id)
 	{
 		$this->db->join('mahasiswa', 'pengajuan_admin.mahasiswa_id = mahasiswa.id_mahasiswa', 'left');
+		if($id != null){
+			$this->db->where('user_id', $id);
+		}
 		return $this->db->get('pengajuan_admin')->result();
     }
 
@@ -170,7 +173,57 @@ class AdminModels extends CI_Model {
 
     public function databimbingan()
     {
-    	$this->db->query("SELECT dosen.nama, pengajuan_pembimbing.nim, count(pengajuan_pembimbing.dosen_id) FROM 'pengajuan_pembimbing' JOIN dosen ON pengajuan_pembimbing.dosen_id = dosen.id_dosen JOIN mahasiswa ON pengajuan_pembimbing.nim = mahasiswa.id_mahasiswa GROUP BY dosen_id , mahasiswa.kodeprodi")->result();
+    	return $this->db->query("SELECT dosen.nama, mahasiswa.kodeprodi, count(pengajuan_pembimbing.dosen_id) as jumlah 
+    		FROM pengajuan_pembimbing 
+    		JOIN dosen ON pengajuan_pembimbing.dosen_id = dosen.id_dosen 
+    		JOIN mahasiswa ON pengajuan_pembimbing.nim = mahasiswa.nim 
+    		GROUP BY dosen.id_dosen")->result();
+    	
+    }
+
+    public function upd($t, $data, $w)
+    {
+    	$this->db->update($t, $data, $w);
+    }
+
+    public function getmahasiswa($id)
+    {
+    	if ($id != null) {
+    		$this->db->where('user_id', $id);
+    		return $this->db->get('mahasiswa');
+    	}else{
+    		return $this->db->get('mahasiswa');
+    	}
+    	
+    }
+
+    public function getdosen($id)
+    {
+    	if ($id != null) {
+    		$this->db->where('user_id', $id);
+    		return $this->db->get('dosen');
+    	}else{
+    		return $this->db->get('dosen');
+    	}
+    	
+    }
+
+    public function ins($t, $data)
+    {
+    	$this->db->insert($t, $data);
+    }
+
+    public function pengajuan_pembimbing($id)
+    {
+    	
+    	return $this->db->query("SELECT pengajuan_pembimbing.*,mahasiswa.nama as mahasiswa, dosen.nip, dosen.nama as dosen FROM pengajuan_pembimbing JOIN mahasiswa on pengajuan_pembimbing.nim = mahasiswa.nim JOIN dosen on pengajuan_pembimbing.dosen_id = dosen.id_dosen WHERE pengajuan_pembimbing.nim = $id ")->result();
+    	
+    }
+
+	public function pengajuan_pembimbing_dosen($id)
+    {
+    	
+    	return $this->db->query("SELECT pengajuan_pembimbing.*,mahasiswa.nama as mahasiswa, dosen.nip, dosen.nama as dosen FROM pengajuan_pembimbing JOIN mahasiswa on pengajuan_pembimbing.nim = mahasiswa.nim JOIN dosen on pengajuan_pembimbing.dosen_id = dosen.id_dosen WHERE pengajuan_pembimbing.dosen_id = $id ")->result();
     	
     }
 

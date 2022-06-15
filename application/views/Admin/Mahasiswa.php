@@ -33,7 +33,8 @@
                                             <td><?php echo $mhs->kodeprodi; ?></td>
                                             <td><?php echo $mhs->kelas; ?></td>
                                             <td><?php echo $mhs->file_pengajuan; ?></td>
-                                            <td><a href="#" class="btn btn-info">Upload</a></td>
+                                            <td><?php echo $mhs->file_balasan; ?></td>
+                                            <td><a href="#" data-toggle="modal" data-target="#uploadbalasan<?= $mhs->id_pengajuan ?>" class=" btn btn-info">Upload</a></td>
                                         </tr>
                                         <?php } ?> 
                                     </tbody>
@@ -44,3 +45,32 @@
 
                 </div>
  <!-- /.container-fluid -->
+<?php foreach ($pengajuan as $mhs) { ?>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="uploadbalasan<?= $mhs->id_pengajuan ?>" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <!-- <h4 class="modal-title">Tambah Data</h4> -->
+            </div>
+            <?php echo form_open_multipart('DashboardAdmin/uploadBalasan'); ?>
+            <div class="modal-body">
+
+                <input type="hidden" name="idd" value="<?= $mhs->id_pengajuan ?>">
+                <div class="form-group ">
+                    <input type="file" class="form-control form-control-user" accept="application/pdf" name="file" required/>
+                </div>
+
+                <input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Upload" id="submit" />
+                <button class="btn btn-warning btn-user btn-block" data-dismiss="modal"> Back </button>
+
+
+                <hr>
+            </div>
+
+            <?php echo form_close(); ?>
+
+        </div>
+    </div>
+</div>
+<?php } ?>

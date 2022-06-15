@@ -41,10 +41,10 @@ class DashboardAdmin extends CI_Controller {
 		if ($this->session->userdata('logged_in') == TRUE) {
             if ($this->session->userdata('level') == "admin") {
                 $data['tampilan_admin'] = 'Admin/Mahasiswa';
-                $data['pengajuan'] = $this->AdminModels->pengajuan_admin();
+                $data['pengajuan'] = $this->AdminModels->pengajuan_admin(null);
                 $this->load->view('Admin/Tview', $data);
             } else {
-                $this->load->view('restricted');
+                redirect('LoginController');
             }
         } else {
             $this->load->view('LoginController/cek_login');
@@ -54,6 +54,7 @@ class DashboardAdmin extends CI_Controller {
 	public function dosen()
 	{
 		$data['tampilan_admin'] = "Admin/DosenB";
+		$data['dosen'] = $this->AdminModels->databimbingan();
 		$this->load->view('Admin/Tview',$data);
 	}
 
@@ -189,6 +190,25 @@ class DashboardAdmin extends CI_Controller {
 		$data['tampilan_admin'] = "Admin/dosenbimbingan";
 		$data['perusahaan'] = $this->AdminModels->databimbingan();
 		$this->load->view('Admin/Tview',$data);
+	}
+
+	public function uploadBalasan()
+	{
+		$config['upload_path'] = './assets/balasan/';
+		$config['allowed_types'] = 'pdf';
+		$config['max_size'] = '3072';
+
+		$this->load->library('upload', $config);
+
+		if (! $this->upload->do_upload('file')){
+			$error = array('error' => $this->upload->display_error());
+			echo $this->upload->display_error();
+		}
+		else{
+			$data = array('file_balasan' => $this->upload->data('file_name'));
+			$this->AdminModels->upd('pengajuan_admin',$data,['id_pengajuan' => $this->input->post('idd')]);
+			redirect('DashboardAdmin/getmahasiswa');
+		}
 	}
 
 

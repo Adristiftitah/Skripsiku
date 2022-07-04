@@ -49,8 +49,8 @@ class DosenController extends CI_Controller {
 		// var_dump($id);die;
 		$data['nim'] = $this->AdminModels->getmahasiswa(null)->result();
 		$data['dosen'] = $this->AdminModels->getdosen($id)->row()->id_dosen;
-		$data['pembimbing'] = $this->AdminModels->pengajuan_pembimbing_dosen($data['dosen']);
-		// var_dump($data['pembimbing']);die;
+		$data['pembimbing'] = $this->AdminModels->pengajuan_admin_dosen($data['dosen']);
+		//var_dump($data['pembimbing']);die;
 		
 		$this->load->view('Dosen/Tview',$data);
 	}

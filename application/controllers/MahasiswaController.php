@@ -35,6 +35,7 @@ class MahasiswaController extends CI_Controller {
 		$id = $this->session->userdata('id_users');
 
 		$data['proposal'] = $this->AdminModels->pengajuan_admin($id);
+		$data['dosen'] = $this->AdminModels->getdosen(null)->result();
 		
 		$this->load->view('Mahasiswa/Tview',$data);
 	}
@@ -57,6 +58,14 @@ class MahasiswaController extends CI_Controller {
 			$user = $this->AdminModels->getmahasiswa($id)->row();
 			$data = array(
 				'mahasiswa_id' => $user->id_mahasiswa,
+				'namaAng1' => $this->input->post('anggota1'),
+				'namaAng2' => $this->input->post('anggota2'),
+				'nimAng1' => $this->input->post('nim1'),
+				'nimAng2' => $this->input->post('nim2'),
+				'prodi' => $this->input->post('prodi'),
+				'tempat' => $this->input->post('tempat'),
+				'tanggalMulai' => $this->input->post('durasi'),
+				'tanggalAkhir' => $this->input->post('exp_durasi'),
 				'file_pengajuan' => $this->upload->data('file_name'),
 				'create_at' => date('Y-m-d')
 			);

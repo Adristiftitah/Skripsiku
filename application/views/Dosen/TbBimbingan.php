@@ -16,12 +16,12 @@
                         <th>No</th>
                         <th>NIM Pengusul</th>
                         <th>Nama Pengusul</th>
-                        <th>NIM Anggota</th>
-                        <th>NIM Anggota</th>
-                        <th>NIP Pembimbing</th>
-                        <th>Nama Pembimbing</th>
-                        <th>Status</th>
-                        <th>File Pengajuan</th>
+                        <th>Nama Anggota 1</th>
+                        <th>Nama Anggota 2</th>
+                        <!-- <th>NIP Pembimbing</th>
+                        <th>Nama Pembimbing</th> -->
+                        <!-- <th>Status</th>
+                        <th>File Pengajuan</th> -->
                         <th>Upload at</th>
                     </tr>
                 </thead>
@@ -36,16 +36,16 @@
                     <tr>
                         <td><?php echo $no++ ?></td>
                         <td><?php echo $mhs->nim; ?></td>
-                        <td><?php echo $mhs->mahasiswa; ?></td>
-                        <td><?php echo $mhs->nim_dua; ?></td>
-                        <td><?php echo $mhs->nim_tiga; ?></td>
-                        <td><?php echo $mhs->nip; ?></td>
-                        <td><?php echo $mhs->dosen; ?></td>
-                        <td><?php if ($mhs-> status == "diproses" || $mhs->status == null) { ?>
+                        <td><?php echo $mhs->nama; ?></td>
+                        <td><?php echo $mhs->namaAng1; ?></td>
+                        <td><?php echo $mhs->namaAng2; ?></td>
+                        <!-- <td><?php echo $mhs->nip; ?></td>
+                        <td><?php echo $mhs->dosen; ?></td> -->
+                        <!-- <td><?php if ($mhs-> status == "diproses" || $mhs->status == null) { ?>
                            <a href="<?=  base_url('index.php/DosenController/updateStatus/'). $mhs->id_pengajuan_pembimbing . '/' . '1' ?>">Setuju</a>
                            / <a href="<?=  base_url('index.php/DosenController/updateStatus/'). $mhs->id_pengajuan_pembimbing . '/' . '2' ?>">Tolak</a>
                        <?php }else{ echo $mhs->status; } ?></td>
-                        <td><a href="<?= base_url('assets/balasan/'.$mhs->file_pengajuan) ?>"><?php echo $mhs->file_pengajuan; ?></a></td>
+                        <td><a href="<?= base_url('assets/balasan/'.$mhs->file_pengajuan) ?>"><?php echo $mhs->file_pengajuan; ?></a></td> -->
                         <td><?php echo $mhs->create_at; ?></td>
                     </tr>
                     <?php } ?> 

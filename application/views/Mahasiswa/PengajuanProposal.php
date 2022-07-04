@@ -1,89 +1,83 @@
 
 <?php 
-    if($proposal == null){
+    // if($proposal == null){
     echo form_open_multipart('MahasiswaController/insproposal'); ?>
         <div class="modal-body">
+        <label for="">Informasi Mahasiswa</label>
             <div class="row">
+                
                 <div class="col-md-6 mb-4">
-                    <input type="text" class="form-control" name="anggota1" placeholder="nama anggota 1">
+                
+                    <input type="text" class="form-control" name="anggota1" placeholder="nama anggota 1" value="<?= $proposal [0] -> namaAng1 ?>">
                 </div> 
                 <div class="col-md-6 mb-4">
-                    <input type="text" class="form-control" name="anggota2" placeholder="nama anggota 2">
+                    <input type="number" class="form-control" name="nim1" placeholder="nim anggota 1" min="1" value="<?= $proposal [0] -> nimAng1 ?>">
                 </div>  
+                <div class="col-md-6 mb-4">
+                    <input type="text" class="form-control" name="anggota2" placeholder="nama anggota 2" value="<?= $proposal [0] -> namaAng2 ?>">
+                </div> 
+                <div class="col-md-6 mb-4">
+                    <input type="number" class="form-control" name="nim2" placeholder="nim anggota 2" min="1" value="<?= $proposal [0] -> nimAng1 ?>">
+                </div> 
                 <div class="col-md-12 mb-4">
-                    <input type="text" class="form-control" name="prodi" placeholder="prodi">
+                    <input type="text" class="form-control" name="prodi" placeholder="prodi" value="<?= $proposal [0] -> prodi ?>">
                 </div>   
                 <div class="col-md-12 mb-4">
-                    <input type="text" class="form-control" name="tempat" placeholder="tempat pkl">
+                    <input type="text" class="form-control" name="tempat" placeholder="tempat pkl" value="<?= $proposal [0] -> tempat ?>">
                 </div>
                 <div class="col-md-6 mb-4">
                     <label for="">Tanggal Dimuluai</label>
-                    <input type="date" class="form-control" name="durasi" value="<?= date('Y-m-d') ?>">
+                    <input type="date" class="form-control" name="durasi" value="<?= $proposal [0] -> tanggalMulai ?>">
                 </div>
                 <div class="col-md-6 mb-4">
                     <label for="">Tanggal Berakhir</label>
-                    <input type="date" class="form-control" name="exp_durasi">
+                    <input type="date" class="form-control" name="exp_durasi" value="<?= $proposal [0] -> tanggalAkhir ?>">
                 </div>                               
                 <div class="col-md-12 mb-4">
+                <?php if($proposal == null) {?>
                     <input type="file" class="form-control" accept="application/pdf" name="file" required/>
+                    <?php }else{ ?>
+                    <input type="text" class="form-control" value="<?= $proposal [0] -> file_pengajuan ?>">
+                <?php } ?>
                 </div>
+                <?php if($proposal != null) {?>
+                
+                <div class="col-md-12 mb-4">
+                <label for="">Informasi Pembimbing</label>
+                <input type="text" class="form-control" name="tempat" placeholder="Nama Pembimbing" value="<?php foreach ($dosen as $d){
+                                                if ($proposal[0]->id_pembimbing == $d->id_dosen){
+                                                    echo $d->nama;
+                                                }
+                                                } ; ?>">
+                </div>
+                <div class="col-md-12 mb-4">
+                <input type="text" class="form-control" name="tempat" placeholder="NIP Pembimbing" value="<?php foreach ($dosen as $d){
+                                                if ($proposal[0]->id_pembimbing == $d->id_dosen){
+                                                    echo $d->nip;
+                                                }
+                                                } ; ?>">
+                </div>
+                <div class="col-md-12 mb-4">
+                <input type="text" class="form-control" name="tempat" placeholder="Nomor Pembimbing" value="<?php foreach ($dosen as $d){
+                                                if ($proposal[0]->id_pembimbing == $d->id_dosen){
+                                                    echo $d->nomortelpon;
+                                                }
+                                                } ; ?>">
+                </div>
+                <?php } ?>
             </div>
-                                             
+            
+        <?php if($proposal == null) {?>
         <input type="submit"  class="btn btn-primary btn-user" name="submit" value="Tambah Data" id="submit"/>
                    
         <button type="button" class="btn btn-danger btn-user" data-dismiss="modal">Batal</button>
-                       
+        <?php } ?>
         <hr>
     </div>
                                         
 <?php 
     echo form_close(); 
-    } else {
+    // } else {
 ?>
 
-     <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Proposal Mahasiswa</h1>
-
-        <!-- DataTales Example -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Data Mahasiswa</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>NIM</th>
-                                <th>Nama</th>
-                                <th>Kelas</th>
-                                <th>Prodi</th>
-                                <th>Proposal</th>
-                                <th>File Pengajuan</th>
-                                <th>Upload Balasan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $no=1; foreach ($proposal as $mhs){ ?>
-                            <tr>
-                                <td><?php echo $no++ ?></td>
-                                <td><?php echo $mhs->nim; ?></td>
-                                <td><?php echo $mhs->nama; ?></td>
-                                <td><?php echo $mhs->kelas; ?></td>
-                                <td><?php echo $mhs->kodeprodi; ?></td>
-                                <td><?php echo $mhs->file_pengajuan; ?></td>
-                                <td><a href="<?= base_url('assets/balasan/'.$mhs->file_balasan) ?>"><?php echo $mhs->file_balasan; ?></a></td>
-                                <td><?php echo $mhs->file_perusahaan; ?></td>
-                            </tr>
-                            <?php } ?> 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </div>
-<?php } ?>
+     

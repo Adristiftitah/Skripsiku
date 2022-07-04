@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="icon"  href="<?php echo base_url(); ?>/assets/icon/icon_polinema.png">
     <title>PKL JTI Polinema</title>
 
     <!-- Custom fonts for this template-->

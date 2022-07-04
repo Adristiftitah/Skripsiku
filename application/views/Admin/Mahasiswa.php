@@ -21,7 +21,9 @@
                                             <th>Prodi</th>
                                             <th>Proposal</th>
                                             <th>File Pengajuan</th>
-                                            <th>Upload Balasan</th>
+                                            <th>Pembimbing</th>
+                                            <th>Action</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -34,7 +36,16 @@
                                             <td><?php echo $mhs->kelas; ?></td>
                                             <td><?php echo $mhs->file_pengajuan; ?></td>
                                             <td><?php echo $mhs->file_balasan; ?></td>
-                                            <td><a href="#" data-toggle="modal" data-target="#uploadbalasan<?= $mhs->id_pengajuan ?>" class=" btn btn-info">Upload</a></td>
+                                            <td><?php foreach ($dosen as $d){
+                                                if ($mhs->id_pembimbing == $d->id_dosen){
+                                                    echo $d->nama;
+                                                }
+                                                } ; ?>
+                                            </td>
+                                            <td>
+                                                <a href="#" data-toggle="modal" data-target="#uploadbalasan<?= $mhs->id_pengajuan ?>" class=" btn btn-info">Upload</a>
+                                                <a href="#" data-toggle="modal" data-target="#uploadpembimbing<?= $mhs->id_pengajuan ?>" class=" btn btn-info">Tambah Pembimbing</a>
+                                            </td>
                                         </tr>
                                         <?php } ?> 
                                     </tbody>
@@ -66,6 +77,41 @@
 
 
                 <hr>
+            </div>
+
+            <?php echo form_close(); ?>
+
+        </div>
+    </div>
+</div>
+<?php } ?>
+
+<?php foreach ($pengajuan as $mhs) { ?>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="uploadpembimbing<?= $mhs->id_pengajuan ?>" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <!-- <h4 class="modal-title">Tambah Data</h4> -->
+            </div>
+            <?php echo form_open_multipart('DashboardAdmin/uploadPembimbing'); ?>
+            <div class="modal-body">
+
+            <input type="hidden" name="idd" value="<?= $mhs->id_pengajuan ?>">
+            <div class="col-md-6 mb-4">
+                <label>Dosen Pembimbing</label>
+                <select class="form-control" name="dosen">
+                    <?php foreach($dosen as $d): ?>
+                        <option value="<?php echo $d->id_dosen ?>"><?php echo $d->nama ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Upload" id="submit" />
+            <button class="btn btn-warning btn-user btn-block" data-dismiss="modal"> Back </button>
+
+
+            <hr>
             </div>
 
             <?php echo form_close(); ?>

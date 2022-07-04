@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="icon"  href="<?php echo base_url(); ?>/assets/icon/icon_polinema.png">
     <title>PKL JTI Polinema</title>
 
     <!-- Custom fonts for this template-->
@@ -62,10 +63,10 @@
                     <span>Data Perusahaan</span>
                 </a>
 
-                <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/MahasiswaController/addpembimbing">
+                <!-- <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/MahasiswaController/addpembimbing">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Pengajuan Pembimbing</span>
-                </a>
+                </a> -->
 
                 <a class="nav-link collapsed" href="<?php echo base_url(); ?>index.php/MahasiswaController/addproposal">
                     <i class="fas fa-fw fa-cog"></i>

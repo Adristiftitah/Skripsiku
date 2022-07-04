@@ -227,6 +227,15 @@ class AdminModels extends CI_Model {
     	
     }
 
+	public function pengajuan_admin_dosen($id)
+	{
+		$this->db->join('mahasiswa', 'pengajuan_admin.mahasiswa_id = mahasiswa.id_mahasiswa', 'left');
+		if($id != null){
+			$this->db->where('id_pembimbing', $id);
+		}
+		return $this->db->get('pengajuan_admin')->result();
+    }
+
 }
 
 /* End of file Admin.php */

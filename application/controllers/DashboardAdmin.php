@@ -42,6 +42,7 @@ class DashboardAdmin extends CI_Controller {
             if ($this->session->userdata('level') == "admin") {
                 $data['tampilan_admin'] = 'Admin/Mahasiswa';
                 $data['pengajuan'] = $this->AdminModels->pengajuan_admin(null);
+				$data['dosen'] = $this->AdminModels->getdosen(null)->result();
                 $this->load->view('Admin/Tview', $data);
             } else {
                 redirect('LoginController');
@@ -209,6 +210,14 @@ class DashboardAdmin extends CI_Controller {
 			$this->AdminModels->upd('pengajuan_admin',$data,['id_pengajuan' => $this->input->post('idd')]);
 			redirect('DashboardAdmin/getmahasiswa');
 		}
+	}
+
+	public function uploadPembimbing()
+	{
+		$data = array('id_pembimbing' => $this->input->post('dosen'));
+		$this->AdminModels->upd('pengajuan_admin',$data,['id_pengajuan' => $this->input->post('idd')]);
+		
+		redirect('DashboardAdmin/getmahasiswa');
 	}
 
 

@@ -34,7 +34,7 @@
                                             <td><?php echo $mhs->nama; ?></td>
                                             <td><?php echo $mhs->kodeprodi; ?></td>
                                             <td><?php echo $mhs->kelas; ?></td>
-                                            <td><?php echo $mhs->file_pengajuan; ?></td>
+                                            <td><a href="<?php echo base_url(); ?>index.php/GeneratePdf/index/<?php echo $mhs->user_id;?>"><?php echo $mhs->file_pengajuan; ?></a></td>
                                             <td><?php echo $mhs->file_balasan; ?></td>
                                             <td><?php foreach ($dosen as $d){
                                                 if ($mhs->id_pembimbing == $d->id_dosen){

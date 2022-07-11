@@ -93,11 +93,11 @@ class LoginController extends CI_Controller {
 				$this->session->set_userdata($sess_data);
 			}
 			if ($this->session->userdata('level')=='admin') {
-				redirect('DashboardAdmin');
+				redirect('DashboardAdmin/getmahasiswa');
 			}elseif ($this->session->userdata('level')=='mahasiswa') {
 				redirect('MahasiswaController');
 			}elseif ($this->session->userdata('level')=='dosen') {
-				redirect('DosenController');
+				redirect('DosenController/bimbingan');
 			}
 		}else{
 			echo "<script>alert('Gagal login: Cek username, password!');history.go(-1);</script>";

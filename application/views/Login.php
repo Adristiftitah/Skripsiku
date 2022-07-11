@@ -41,6 +41,9 @@
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Sistem PKL JTI Polinema</h1>
+                                        
+                                        <img src="<?php echo base_url(); ?>/assets/icon/icon_polinema.png" width="150" height="150">
+                
                                     </div>
                                     
                                         <?php echo form_open("LoginController/cek_login"); ?>

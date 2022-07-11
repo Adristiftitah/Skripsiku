@@ -36,6 +36,7 @@ class MahasiswaController extends CI_Controller {
 
 		$data['proposal'] = $this->AdminModels->pengajuan_admin($id);
 		$data['dosen'] = $this->AdminModels->getdosen(null)->result();
+		$data['perusahaan'] = $this->AdminModels->getPerusahaan();
 		
 		$this->load->view('Mahasiswa/Tview',$data);
 	}
@@ -45,16 +46,32 @@ class MahasiswaController extends CI_Controller {
 		$config['upload_path'] = './uploads/';
 		$config['allowed_types'] = 'pdf';
 		$config['max_size']  = '3000';
+		$config['encrypt_name'] = TRUE;
+		$this->load->library('upload', $config);  //File Uploading library
+		$this->upload->do_upload('file');  // input name which have to upload 
+		$file_pengajuan=$this->upload->data('file_name');   //variable which store the path
 
-		$this->load->library('upload', $config);
+		$config2['upload_path'] = './uploads/mou/';
+		$config2['allowed_types'] = 'pdf';
+		$config2['max_size']  = '3000';
+		$config2['encrypt_name'] = TRUE;
+		$this->upload->initialize($config2);
+		$this->upload->do_upload('file_mou');
+		$file_mou = $this->upload->data('file_name');
 		
 		if ( ! $this->upload->do_upload('file')){
+			$error = array('error' => $this->upload->display_errors());
+			echo $this->upload->display_errors();
+		}else if ( ! $this->upload->do_upload('file_mou')){
 			$error = array('error' => $this->upload->display_errors());
 			echo $this->upload->display_errors();
 		}
 		else{
 			$id = $this->session->userdata('id_users');
+
 			
+			
+
 			$user = $this->AdminModels->getmahasiswa($id)->row();
 			$data = array(
 				'mahasiswa_id' => $user->id_mahasiswa,
@@ -63,10 +80,11 @@ class MahasiswaController extends CI_Controller {
 				'nimAng1' => $this->input->post('nim1'),
 				'nimAng2' => $this->input->post('nim2'),
 				'prodi' => $this->input->post('prodi'),
-				'tempat' => $this->input->post('tempat'),
+				'id_perusahaan' => $this->input->post('id_perusahaan'),
 				'tanggalMulai' => $this->input->post('durasi'),
 				'tanggalAkhir' => $this->input->post('exp_durasi'),
-				'file_pengajuan' => $this->upload->data('file_name'),
+				'file_pengajuan' => $file_pengajuan,
+				'file_mou'=> $file_mou,
 				'create_at' => date('Y-m-d')
 			);
 			$this->AdminModels->ins('pengajuan_admin',$data);
@@ -131,6 +149,88 @@ class MahasiswaController extends CI_Controller {
 		$this->load->view('Mahasiswa/Tview',$data);
 
 	}
+
+	public function downloadMou($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_admin');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_mou;
+		force_download('uploads/mou/'.$nama_file, NULL);
+	}
+
+	public function updateFileProposal()
+	{
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'pdf';
+		$config['max_size']  = '3000';
+		$config['encrypt_name'] = TRUE;
+		$this->load->library('upload', $config);  //File Uploading library
+		$this->upload->do_upload('file');  // input name which have to upload 
+		$file_pengajuan=$this->upload->data('file_name');   //variable which store the path
+
+		$config2['upload_path'] = './uploads/mou/';
+		$config2['allowed_types'] = 'pdf';
+		$config2['max_size']  = '3000';
+		$config2['encrypt_name'] = TRUE;
+		$this->upload->initialize($config2);
+		$this->upload->do_upload('file_mou');
+		$file_mou = $this->upload->data('file_name');
+		
+	
+		$id = $this->session->userdata('id_users');
+		$id_pengajuan = $this->input->post('id_pengajuan');
+		if($this->upload->do_upload('file') != null)
+		{
+			$this->db->where('id_pengajuan', $id_pengajuan);
+			$this->db->set('file_pengajuan', $file_pengajuan);
+			$this->db->update('pengajuan_admin');
+			redirect('MahasiswaController/addproposal');
+		}else if($this->upload->do_upload('file_mou') !=null)
+		{
+			$this->db->where('id_pengajuan', $id_pengajuan);
+			$this->db->set('file_mou', $file_mou);
+			$this->db->update('pengajuan_admin');
+			redirect('MahasiswaController/addproposal');
+
+		}
+
+		
+		
+	}
+
+	public function downloadTemplate($id)
+	{
+		$filename = null;
+		
+		if($id == 1)
+		{
+			$filename = "FORM_BIMBINGAN_PKL_(DOSEN)_D3.docx";
+		}else if($id == 2)
+		{
+			$filename = "FORM BIMBINGAN PKL (DOSEN)_D4.docx";
+		}else if($id == 3)
+		{
+			$filename = "FORM BIMBINGAN PKL (INSTANSI).docx";
+		}else if($id == 4)
+		{
+			$filename = "FORM PENILAIAN PEMBIMBING PKL D4.docx";
+		}
+		else if($id == 5)
+		{
+			$filename = "Draft Permohonan Pengantar PKL.docx";
+		}
+		else if($id == 6)
+		{
+			$filename = "(MI) Tanda Terima Penyerahan Laporan PKL-Magang.docx";
+		}
+		else if($id == 7)
+		{
+			$filename = "(TI) Tanda Terima Penyerahan Laporan PKL-Magang.docx";
+		}
+		force_download('assets/template/'.$filename, NULL);
+	}
+
 
 }
 

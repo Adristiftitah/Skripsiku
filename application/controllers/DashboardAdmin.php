@@ -43,6 +43,8 @@ class DashboardAdmin extends CI_Controller {
                 $data['tampilan_admin'] = 'Admin/Mahasiswa';
                 $data['pengajuan'] = $this->AdminModels->pengajuan_admin(null);
 				$data['dosen'] = $this->AdminModels->getdosen(null)->result();
+				// var_dump($data['pengajuan']);
+				// die();
                 $this->load->view('Admin/Tview', $data);
             } else {
                 redirect('LoginController');
@@ -50,6 +52,23 @@ class DashboardAdmin extends CI_Controller {
         } else {
             $this->load->view('LoginController/cek_login');
         }
+	}
+	
+	public function downloadPengajuan($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_admin');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_pengajuan;
+		force_download('uploads/'.$nama_file, NULL);
+	}
+	public function downloadBalasan($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_admin');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_balasan;
+		force_download('assets/balasan/'.$nama_file, NULL);
 	}
 
 	public function dosen()
@@ -198,6 +217,7 @@ class DashboardAdmin extends CI_Controller {
 		$config['upload_path'] = './assets/balasan/';
 		$config['allowed_types'] = 'pdf';
 		$config['max_size'] = '3072';
+		$config['encrypt_name'] = TRUE;
 
 		$this->load->library('upload', $config);
 

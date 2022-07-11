@@ -21,10 +21,18 @@ class AdminModels extends CI_Model {
     public function pengajuan_admin($id)
 	{
 		$this->db->join('mahasiswa', 'pengajuan_admin.mahasiswa_id = mahasiswa.id_mahasiswa', 'left');
+		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
+		$this->db->select('pengajuan_admin.id_pengajuan,pengajuan_admin.file_pengajuan ,pengajuan_admin.file_balasan, pengajuan_admin.namaAng1, pengajuan_admin.namaAng2, pengajuan_admin.nimAng1, pengajuan_admin.nimAng2, 
+		pengajuan_admin.prodi, perusahaan.nama as nama_perusahaan, pengajuan_admin.tanggalMulai, pengajuan_admin.tanggalAkhir,pengajuan_admin.id_pembimbing,pengajuan_admin.create_at,
+		mahasiswa.nim, mahasiswa.nama as nama_mhs, mahasiswa.kodeprodi, mahasiswa.nomormhs, mahasiswa.nomorortu, mahasiswa.kelas, mahasiswa.user_id,perusahaan.alamat as alamat_perusahaan, pengajuan_admin.file_mou');
 		if($id != null){
-			$this->db->where('user_id', $id);
+			$this->db->where('mahasiswa.user_id', $id);
+			// $this->db->where('pengajuan_admin.id_mahasiswa','mahasiswa.id_mahasiswa');
 		}
+
 		return $this->db->get('pengajuan_admin')->result();
+		// var_dump($data[0]->id_pengajuan);
+		// die();
     }
 
     public function cekdosenid($id)
@@ -177,7 +185,7 @@ class AdminModels extends CI_Model {
     		FROM pengajuan_pembimbing 
     		JOIN dosen ON pengajuan_pembimbing.dosen_id = dosen.id_dosen 
     		JOIN mahasiswa ON pengajuan_pembimbing.nim = mahasiswa.nim 
-    		GROUP BY dosen.id_dosen")->result();
+    		GROUP BY  dosen.nama, mahasiswa.kodeprodi")->result();
     	
     }
 
@@ -208,6 +216,12 @@ class AdminModels extends CI_Model {
     	
     }
 
+	public function getPerusahaan()
+    {
+    	return $this->db->get('perusahaan')->result();
+    	
+    }
+
     public function ins($t, $data)
     {
     	$this->db->insert($t, $data);
@@ -233,6 +247,7 @@ class AdminModels extends CI_Model {
 		if($id != null){
 			$this->db->where('id_pembimbing', $id);
 		}
+	
 		return $this->db->get('pengajuan_admin')->result();
     }
 

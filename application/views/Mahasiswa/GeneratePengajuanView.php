@@ -25,12 +25,12 @@
         <tr>
             <td>Tempat</td>
             <td style="width:5%;">:</td>
-            <td><?php echo $proposal[0]->tempat;?></td>
+            <td><?php echo $proposal[0]->nama_perusahaan;?></td>
         </tr>
         <tr>
             <td>Alamat</td>
             <td style="width:5%;">:</td>
-            <td></td>
+            <td><?php echo $proposal[0]->alamat_perusahaan ?></td>
         </tr>
         <tr>
             <td>Pelaksanaan</td>
@@ -47,7 +47,7 @@
             <td style="width:5%;">:</td>
             <td>
                 <ol style="padding-left:5px; margin-top:0; list-style-position:inside;">
-                    <li><?php echo $proposal[0]->nama;?></li>
+                    <li><?php echo $proposal[0]->nama_mhs;?></li>
                     <li><?php echo $proposal[0]->namaAng1;?></li>
                     <li><?php echo $proposal[0]->namaAng2;?></li>
                 </ol>

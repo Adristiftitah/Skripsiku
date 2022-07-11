@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 17, 2022 at 07:01 AM
+-- Generation Time: Jul 11, 2022 at 04:54 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `dosen` (
   `id_dosen` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `nip` int(50) NOT NULL,
+  `nip` varchar(50) NOT NULL,
   `nama` text NOT NULL,
   `nomortelpon` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -40,7 +40,7 @@ CREATE TABLE `dosen` (
 --
 
 INSERT INTO `dosen` (`id_dosen`, `user_id`, `nip`, `nama`, `nomortelpon`) VALUES
-(2, 9, 2147483647, 'agung bayu W', '0827398201');
+(4, 17, '198902102019031020', 'Agung Nugroho Pramudhita, S.T., M.T.', '081334699967');
 
 -- --------------------------------------------------------
 
@@ -58,17 +58,6 @@ CREATE TABLE `mahasiswa` (
   `kodeprodi` int(10) NOT NULL,
   `kelas` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `mahasiswa`
---
-
-INSERT INTO `mahasiswa` (`id_mahasiswa`, `user_id`, `nim`, `nama`, `nomormhs`, `nomorortu`, `kodeprodi`, `kelas`) VALUES
-(1, 5, 1841720177, 'babe', '0826474829', '0826474828', 0, 'TI4H'),
-(2, 6, 1841720176, 'farras', '081637483920', '081637483921', 0, 'MI3H'),
-(3, 11, 186579034, 'adristi', '08263648439', '08263648438', 0, 'TI4H'),
-(4, 12, 186729034, 'wandi', '08263648439', '08263648437', 0, 'TI4H'),
-(5, 13, 184152672, 'bubu', '0826364776', '0826364777', 0, 'MI2H');
 
 -- --------------------------------------------------------
 
@@ -89,20 +78,12 @@ CREATE TABLE `pengajuan_admin` (
   `nimAng1` varchar(20) NOT NULL,
   `nimAng2` varchar(20) NOT NULL,
   `prodi` varchar(15) NOT NULL,
-  `tempat` text NOT NULL,
-  `tanggalMulai` date DEFAULT current_timestamp(),
-  `tanggalAkhir` date DEFAULT NULL
+  `id_perusahaan` int(11) NOT NULL,
+  `tanggalMulai` date DEFAULT NULL,
+  `tanggalAkhir` date DEFAULT NULL,
+  `id_pembimbing` int(11) DEFAULT NULL,
+  `file_mou` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `pengajuan_admin`
---
-
-INSERT INTO `pengajuan_admin` (`id_pengajuan`, `mahasiswa_id`, `file_pengajuan`, `file_balasan`, `file_perusahaan`, `create_at`, `update_at`, `namaAng1`, `namaAng2`, `nimAng1`, `nimAng2`, `prodi`, `tempat`, `tanggalMulai`, `tanggalAkhir`) VALUES
-(1, 2, '249244-none-837c3dfb1.pdf', '', '', '2022-05-21 00:00:00', NULL, '', '', '', '', '', '', '2022-06-15', NULL),
-(2, 1, '249244-none-837c3dfb2.pdf', '', '', '2022-05-25 00:00:00', NULL, '', '', '', '', '', '', '2022-06-15', NULL),
-(3, 4, '02_TI-4H_Adristi_Iftitah_Y_Tugas_Paragraf.pdf', '', '', '2022-06-07 00:00:00', NULL, '', '', '', '', '', '', '2022-06-15', NULL),
-(4, 5, '02_TI-4H_Adristi_Iftitah_Y_Tugas_Paragraf1.pdf', '', '', '2022-06-15 00:00:00', NULL, 'Babi', 'Bibi', '124567', '12458', 'D4 Teknik', 'Indosat', '2022-06-15', '2022-07-09');
 
 -- --------------------------------------------------------
 
@@ -122,13 +103,6 @@ CREATE TABLE `pengajuan_pembimbing` (
   `update_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `pengajuan_pembimbing`
---
-
-INSERT INTO `pengajuan_pembimbing` (`id_pengajuan_pembimbing`, `nim`, `nim_dua`, `nim_tiga`, `dosen_id`, `file_pengajuan`, `status`, `create_at`, `update_at`) VALUES
-(1, 1841720176, 0, 0, 2, '249244-none-837c3dfb.pdf', 'disetujui', '2022-05-21 00:00:00', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -143,13 +117,6 @@ CREATE TABLE `perusahaan` (
   `qty` int(11) NOT NULL,
   `penanggung_jawab` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `perusahaan`
---
-
-INSERT INTO `perusahaan` (`id_perusahaan`, `nama`, `alamat`, `telpon`, `qty`, `penanggung_jawab`) VALUES
-(2, 'PT Telkom Sigma', '', '08162537382', 3, 'Risti');
 
 -- --------------------------------------------------------
 
@@ -169,15 +136,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_users`, `email`, `password`, `level`) VALUES
-(1, 'leedong@gmail.com', 'b7574274521e901db3e13dbd30b70ac1', 'mahasiswa'),
 (2, 'admin@gmail.com', '21232f297a57a5a743894a0e4a801fc3', 'admin'),
-(4, 'adristi@gmail.com', '1d6163f32c3071fd9f244b66c36f3218', 'mahasiswa'),
-(5, 'babe@gmail.com', '420fc26fa13e665e32ca17ea781c645a', 'mahasiswa'),
-(6, 'farras@gmail.com', '27b7597f25f85ef4a8c26443f7a0ebcf', 'mahasiswa'),
-(9, 'agung@gmail.com', '6f5d0ad4bc971cddc51a0c5f74bdf3fd', 'dosen'),
-(11, 'adristi@gmail.com', '1d6163f32c3071fd9f244b66c36f3218', 'mahasiswa'),
-(12, 'wandi@gmail.com', '3b061f6cd9ce9137e02c651f87e166b2', 'mahasiswa'),
-(13, 'bubu@gmail.com', '098eb8ba2cc924fad0ec05acd869a4eb', 'mahasiswa');
+(17, 'agung@gmail.com', '5586c12b64d73ee923f729972f9940a4', 'dosen');
 
 --
 -- Indexes for dumped tables
@@ -230,19 +190,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `dosen`
 --
 ALTER TABLE `dosen`
-  MODIFY `id_dosen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_dosen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `mahasiswa`
 --
 ALTER TABLE `mahasiswa`
-  MODIFY `id_mahasiswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_mahasiswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `pengajuan_admin`
 --
 ALTER TABLE `pengajuan_admin`
-  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `pengajuan_pembimbing`
@@ -260,7 +220,7 @@ ALTER TABLE `perusahaan`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_users` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_users` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables

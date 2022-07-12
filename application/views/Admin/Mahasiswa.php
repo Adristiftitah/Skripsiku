@@ -9,6 +9,7 @@
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Data Mahasiswa</h6>
     </div>
+    
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -35,8 +36,10 @@
                         <td><?php echo $mhs->kelas; ?></td>
                         <td><?php echo $mhs->kodeprodi; ?></td>
                         <td>
-                            <a href="<?php echo base_url(); ?>index.php/DashboardAdmin/downloadPengajuan/<?php echo $mhs->id_pengajuan;?>"><?php echo $mhs->file_pengajuan; ?></a><br/>
-                            <a href="<?php echo base_url(); ?>index.php/GeneratePdf/index/<?php echo $mhs->user_id;?>"><span style="font-size:13px;"><i><u>Download Lembar Pengesahan</u></i></span></a>
+                            <a href="<?php echo base_url(); ?>index.php/DashboardAdmin/downloadPengajuan/<?php echo $mhs->id_pengajuan;?>">Download Proposal</a><br/>
+                            <a href="<?php echo base_url(); ?>index.php/GeneratePdf/index/<?php echo $mhs->user_id;?>">Download Lembar Pengesahan</a><br>
+                            <a href="<?php echo base_url(); ?>index.php/MahasiswaController/downloadMou/<?php echo $mhs->id_pengajuan;?>">Download MOU</a>
+                            <a href="<?php echo base_url(); ?>index.php/MahasiswaController/downloadSpk/<?php echo $mhs->id_pengajuan;?>">Download Surat Perjanjian Kerja</a>
                         </td>
                         <td>
                             <?php if($mhs->file_balasan != null){ ?>    
@@ -51,7 +54,7 @@
                             } ; ?>
                         </td>
                         <td>
-                            <a href="#" data-toggle="modal" data-target="#uploadbalasan<?= $mhs->id_pengajuan ?>" class=" btn btn-info">Upload</a>
+                            <a href="#" data-toggle="modal" data-target="#uploadbalasan<?= $mhs->id_pengajuan ?>" class=" btn btn-info">Upload Berkas</a>
                             <a href="#" data-toggle="modal" data-target="#uploadpembimbing<?= $mhs->id_pengajuan ?>" class=" btn btn-warning">Tambah Pembimbing</a>
                         </td>
                     </tr>
@@ -80,7 +83,7 @@
 <input type="file" class="form-control form-control-user" accept="application/pdf" name="file" required/>
 </div>
 
-<input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Upload" id="submit" />
+<input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Menugaskan" id="submit" />
 <button class="btn btn-warning btn-user btn-block" data-dismiss="modal"> Back </button>
 
 

@@ -3,6 +3,19 @@
     if($proposal != null){
     echo form_open_multipart('MahasiswaController/updateFileProposal'); ?>
     <div class="modal-body">
+    <?php if($proposal[0]->file_balasan != null) {?>
+    <div class="row">
+         <!-- Border Left Utilities -->
+        <div class="col-lg-12">
+
+            <div class="card mb-4 py-1 border-left-warning">
+                <div class="card-body">
+                    Menunggu Balasan
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
         <label for="">Informasi Mahasiswa</label>
             <div class="row">
                 
@@ -16,13 +29,13 @@
                     <input type="text" class="form-control" name="anggota2" placeholder="nama anggota 2" value="<?= $proposal [0] -> namaAng2 ?>" readonly>
                 </div> 
                 <div class="col-md-6 mb-4">
-                    <input type="number" class="form-control" name="nim2" placeholder="nim anggota 2" min="1" value="<?= $proposal [0] -> nimAng1 ?>" readonly>
+                    <input type="number" class="form-control" name="nim2" placeholder="nim anggota 2" min="1" value="<?= $proposal [0] -> nimAng2 ?>" readonly>
                 </div> 
                 <div class="col-md-12 mb-4">
-                    <input type="text" class="form-control" name="prodi" placeholder="prodi" value="<?= $proposal [0] -> prodi ?>" readonly>
+                    <input type="text" class="form-control" name="prodi" placeholder="prodi" value="<?= $proposal [0] -> kodeprodi ?>" readonly>
                 </div>
                 <div class="col-md-12 mb-4">
-                    <input type="text" class="form-control" name="prodi" placeholder="id_perusahaan" value="<?= $proposal [0]->nama_perusahaan ?>" readonly>
+                    <input type="text" class="form-control" name="nama_perusahaan" placeholder="id_perusahaan" value="<?= $proposal [0]->nama_perusahaan ?>" readonly>
                 </div> 
                 <div class="col-md-6 mb-4">
                     <label for="">Tanggal Dimuluai</label>
@@ -42,6 +55,12 @@
                     <label>File MOU</label>
                     <a href="<?php echo base_url(); ?>index.php/MahasiswaController/downloadMou/<?php echo $proposal[0]->id_pengajuan;?>"><?php echo $proposal[0]->file_mou; ?></a>
                     <input type="file" class="form-control" accept="application/pdf" name="file_mou" />
+
+                </div>
+                <div class="col-md-12 mb-4">
+                    <label>File Surat Perjanjian Kerja</label>
+                    <a href="<?php echo base_url(); ?>index.php/MahasiswaController/downloadSpk/<?php echo $proposal[0]->id_pengajuan;?>"><?php echo $proposal[0]->file_spk; ?></a>
+                    <input type="file" class="form-control" accept="application/pdf" name="file_spk" />
 
                 </div>
                 <div class="col-md-12 mb-4">
@@ -101,7 +120,7 @@
                     <input type="number" class="form-control" name="nim2" placeholder="nim anggota 2" min="1" >
                 </div> 
                 <div class="col-md-12 mb-4">
-                    <input type="text" class="form-control" name="prodi" placeholder="prodi" >
+                    <input type="text" class="form-control" name="prodi" placeholder="prodi" value="<?php echo $mahasiswa->kodeprodi?>">
                 </div>
                 <div class="col-md-12 mb-4">
                     <select class="form-control" name="id_perusahaan">
@@ -129,6 +148,14 @@
                 <label>File MOU</label>
                 <?php if($proposal == null) {?>
                     <input type="file" class="form-control" accept="application/pdf" name="file_mou" required/>
+                    <?php }else{ ?>
+                    <input type="text" class="form-control">
+                <?php } ?>
+                </div>
+                <div class="col-md-12 mb-4">
+                <label>File Surat Perjanjian Kerja</label>
+                <?php if($proposal == null) {?>
+                    <input type="file" class="form-control" accept="application/pdf" name="file_spk" required/>
                     <?php }else{ ?>
                     <input type="text" class="form-control">
                 <?php } ?>

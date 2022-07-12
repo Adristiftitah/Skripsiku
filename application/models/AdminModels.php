@@ -24,7 +24,7 @@ class AdminModels extends CI_Model {
 		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
 		$this->db->select('pengajuan_admin.id_pengajuan,pengajuan_admin.file_pengajuan ,pengajuan_admin.file_balasan, pengajuan_admin.namaAng1, pengajuan_admin.namaAng2, pengajuan_admin.nimAng1, pengajuan_admin.nimAng2, 
 		pengajuan_admin.prodi, perusahaan.nama as nama_perusahaan, pengajuan_admin.tanggalMulai, pengajuan_admin.tanggalAkhir,pengajuan_admin.id_pembimbing,pengajuan_admin.create_at,
-		mahasiswa.nim, mahasiswa.nama as nama_mhs, mahasiswa.kodeprodi, mahasiswa.nomormhs, mahasiswa.nomorortu, mahasiswa.kelas, mahasiswa.user_id,perusahaan.alamat as alamat_perusahaan, pengajuan_admin.file_mou');
+		mahasiswa.nim, mahasiswa.nama as nama_mhs, mahasiswa.kodeprodi, mahasiswa.nomormhs, mahasiswa.nomorortu, mahasiswa.kelas, mahasiswa.user_id,perusahaan.alamat as alamat_perusahaan, pengajuan_admin.file_mou, pengajuan_admin.file_spk');
 		if($id != null){
 			$this->db->where('mahasiswa.user_id', $id);
 			// $this->db->where('pengajuan_admin.id_mahasiswa','mahasiswa.id_mahasiswa');

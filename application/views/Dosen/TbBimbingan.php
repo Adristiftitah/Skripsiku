@@ -22,7 +22,9 @@
                         <th>Nama Pembimbing</th> -->
                         <!-- <th>Status</th>
                         <th>File Pengajuan</th> -->
-                        <th>Upload at</th>
+                        <th>Nama Perusahaan</th>
+                        <th>Tanggal Mulai</th>
+                        <th>Tanggal Berakhir</th>
                     </tr>
                 </thead>
                 <tbody>

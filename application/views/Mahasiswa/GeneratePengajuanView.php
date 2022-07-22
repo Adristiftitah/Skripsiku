@@ -25,19 +25,19 @@
         <tr>
             <td>Tempat</td>
             <td style="width:5%;">:</td>
-            <td><?php echo $proposal[0]->nama_perusahaan;?></td>
+            <td><?php echo $proposal['nama_perusahaan'];?></td>
         </tr>
         <tr>
             <td>Alamat</td>
             <td style="width:5%;">:</td>
-            <td><?php echo $proposal[0]->alamat_perusahaan ?></td>
+            <td><?php echo $proposal['alamat_perusahaan']; ?></td>
         </tr>
         <tr>
             <td>Pelaksanaan</td>
             <td style="width:5%;">:</td>
-            <td style="vertical-align:top;"><?php $split= explode(' ', date("d m Y",strtotime($proposal[0]->tanggalMulai)));
+            <td style="vertical-align:top;"><?php $split= explode(' ', date("d m Y",strtotime($proposal['tanggal_mulai'])));
         echo $split[0] . ' ' . $bulan[ (int)$split[1] ] . ' ' . $split[2]; 
-         ?> sampai <?php $split= explode(' ', date("d m Y",strtotime($proposal[0]->tanggalAkhir)));
+         ?> sampai <?php $split= explode(' ', date("d m Y",strtotime($proposal['tanggal_akhir'])));
          echo $split[0] . ' ' . $bulan[ (int)$split[1] ] . ' ' . $split[2]; 
           ?> atau sesuai dengan kebijakan instansi asalkan 
                 tidak melebihi batas maksimal <br>yang ditetapkan pihak kampus (6 Bulan)</td>
@@ -47,15 +47,15 @@
             <td style="width:5%;">:</td>
             <td>
                 <ol style="padding-left:5px; margin-top:0; list-style-position:inside;">
-                    <li><?php echo $proposal[0]->nama_mhs;?></li>
-                    <li><?php echo $proposal[0]->namaAng1;?></li>
-                    <li><?php echo $proposal[0]->namaAng2;?></li>
+                    <?php foreach ($anggota as $key => $ang) { ?>
+                        <li><?php echo $ang['nim_anggota'] . " - " . $ang['nama_anggota'];?></li>
+                    <?php } ?>
                 </ol>
             </td>
         </tr>
         <tbody>
 </table>
-<p style="text-align: center;"> Malang, <?php $split= explode(' ', date("d m Y",strtotime($proposal[0]->create_at)));
+<p style="text-align: center;"> Malang, <?php $split= explode(' ', date("d m Y",strtotime($proposal['created_at'])));
         echo $split[0] . ' ' . $bulan[ (int)$split[1] ] . ' ' . $split[2]; 
          ?> <br>Mengetahui dan Menyetujui,</p>
 <table class="table table-striped table-hover" style="width:100%;">

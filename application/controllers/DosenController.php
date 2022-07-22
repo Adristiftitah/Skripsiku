@@ -8,7 +8,7 @@ class DosenController extends CI_Controller {
 		if ($this->session->userdata('email')=="") {
 			redirect('LoginController','refresh');
 		}
-		$this->load->model('model_user');
+		$this->load->model('Model_user');
 		$this->load->model('AdminModels');
 		$this->load->helper('text');
 	}
@@ -46,13 +46,59 @@ class DosenController extends CI_Controller {
 	{
 		$data['tampilan_dosen'] = "Dosen/TbBimbingan";
 		$id = $this->session->userdata('id_users');
-		// var_dump($id);die;
-		$data['nim'] = $this->AdminModels->getmahasiswa(null)->result();
-		$data['dosen'] = $this->AdminModels->getdosen($id)->row()->id_dosen;
-		$data['pembimbing'] = $this->AdminModels->pengajuan_admin_dosen($data['dosen']);
-		//var_dump($data['pembimbing']);die;
+
+		// $data['nim'] = $this->AdminModels->getmahasiswa(null)->result();
+		$dosen_id = $this->AdminModels->getdosen($id)->row()->id_dosen;
+		$data['pkl'] = $this->AdminModels->pengajuan_admin_dosen($dosen_id);
+		// var_dump($data['pkl']);
+		
 		
 		$this->load->view('Dosen/Tview',$data);
+	}
+
+	public function detailLaporan($id)
+	{
+		//data detil
+		$this->db->where('pengajuan_admin.id_pengajuan', $id);
+		$this->db->join('perusahaan','perusahaan.id_perusahaan=pengajuan_admin.id_perusahaan', 'left');
+		$this->db->join('pengajuan_pembimbing', 'pengajuan_pembimbing.id_pengajuan=pengajuan_admin.id_pengajuan','left');
+		$this->db->select('pengajuan_admin.*, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan,pengajuan_pembimbing.status_laporan_pkl,pengajuan_pembimbing.file_laporan_pkl');
+		$data['detail'] = $this->db->get('pengajuan_admin')->row_array();
+
+		//data anggota 
+		$this->db->where('id_pengajuan', $id);
+		$data['anggota'] = $this->db->get('pengajuan_admin_anggota')->result_array();
+		// var_dump($data['detail']);
+		// die();
+		
+
+		$data['tampilan_dosen'] = "Dosen/detailLaporan";
+		$this->load->view('Dosen/Tview',$data);
+	}
+	public function downloadLaporanPKL($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_pembimbing');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_laporan_pkl;
+		force_download('uploads/laporan_pkl/'.$nama_file, NULL);
+	}
+
+	public function approveLaporan($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->set('status_laporan_pkl', '1');
+		$this->db->update('pengajuan_pembimbing');
+		redirect('DosenController/detailLaporan/'.$id,'refresh');
+
+	}
+	public function rejectLaporan($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->set('status_laporan_pkl', '1');
+		$this->db->update('pengajuan_pembimbing');
+		redirect('DosenController/detailLaporan/'.$id,'refresh');
+
 	}
 
 }

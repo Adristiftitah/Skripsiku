@@ -7,6 +7,16 @@
 
                     <!-- Content Row -->
                     <div class="row">
+                        <div class="col-lg-12 mb-4">
+
+                        <!-- Illustrations -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Mahasiswa yang meminta surat rekomendasi pudir 1 bisa menghubungi admin pudir 1.</h6>
+                            </div>
+                         
+                            </div>
+                        </div>
 
                         <div class="col-lg-12 mb-4">
 

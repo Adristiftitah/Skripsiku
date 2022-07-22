@@ -98,7 +98,7 @@
          <div class="modal-content">
              <div class="modal-header">
                  <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                 <!-- <h4 class="modal-title">Tambah Data</h4> -->
+                 <h4 class="modal-title">Tambah Data</h4>
              </div>
              <?php echo form_open('DashboardAdmin/dosenedit/'. $dt->id_users); ?>
                 <div class="modal-body">

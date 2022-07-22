@@ -5,7 +5,7 @@ class LoginController extends CI_Controller {
 
 	function __construct(){
 		parent:: __construct();
-		$this->load->model('model_user');
+		$this->load->model('Model_user');
 		$this->load->helper(array('url','form'));
 		$this->load->library(array('form_validation','session'));
 	}
@@ -28,7 +28,7 @@ class LoginController extends CI_Controller {
 			$this->form_validation->set_rules('kelas','KELAS', 'required');
 
 			if ($this->form_validation->run() == TRUE) {
-                if ($this->model_user->register() == TRUE) {
+                if ($this->Model_user->register() == TRUE) {
                     $data = [
                         'notif'           => 'Registrasi Berhasil'
                     ];
@@ -81,8 +81,8 @@ class LoginController extends CI_Controller {
 		$data = array('email' => $this->input->post('email', TRUE),
 		'password' => md5($this->input->post('password', TRUE))
 		);
-		$this->load->model('model_user'); //untuk load model
-		$hasil = $this->model_user->cek_user($data);
+		$this->load->model('Model_user'); //untuk load model
+		$hasil = $this->Model_user->cek_user($data);
 
 		if ($hasil->num_rows() == 1) {
 			foreach ($hasil->result() as $sess){

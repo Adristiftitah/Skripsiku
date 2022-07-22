@@ -31,21 +31,58 @@ class MahasiswaController extends CI_Controller {
 
 	public function addproposal()
 	{
+		$id = $this->session->userdata('id_users');
+		$user = $this->AdminModels->getmahasiswa($id)->row();
+
+		
+		//get data to table
+		$data['proposal'] = $this->AdminModels->getDataPengajuan($user->nim);
+
+		//validasi add proposal
+		
+		$this->db->where('pengajuan_admin_anggota.nim_anggota', $user->nim);
+		$this->db->join('pengajuan_admin', 'pengajuan_admin.id_pengajuan=pengajuan_admin_anggota.id_pengajuan','left');
+		$this->db->order_by('pengajuan_admin_anggota.created_at','desc');
+		$this->db->select('pengajuan_admin.status_penerimaan');
+		$data['users'] = $this->db->get('pengajuan_admin_anggota')->row_array();
+		if($data['users'] == null){
+			$data['users'] = 'null';
+		}
+
 		$data['tampilan_mahasiswa'] = "Mahasiswa/PengajuanProposal";
+		$this->load->view('Mahasiswa/Tview',$data);
+	}
+	public function createProposal()
+	{
+		$data['tampilan_mahasiswa'] = "Mahasiswa/addPengajuanProposal";
 		$id = $this->session->userdata('id_users');
 		$user = $this->AdminModels->getmahasiswa($id)->row();
 		// var_dump($user);
 		// die();
-		$data['proposal'] = $this->AdminModels->pengajuan_admin($id);
+		// $data['proposal'] = $this->AdminModels->pengajuan_admin($id);
 		$data['dosen'] = $this->AdminModels->getdosen(null)->result();
 		$data['perusahaan'] = $this->AdminModels->getPerusahaan();
+		$data['all_mahasiswa'] = $this->AdminModels->getAllMahasiswa();
 		$data['mahasiswa'] = $user;
+		
+		
 		
 		$this->load->view('Mahasiswa/Tview',$data);
 	}
 
+	public function getAllMahasiswa()
+	{
+		$data = $this->AdminModels->getAllMahasiswa();
+		// return $this->response->setJson(['data'=>$data]);
+		header('Content-Type: application/json');
+		echo json_encode( $data );
+	}
+
+
+
 	public function insproposal()
 	{
+		$get_id_perusahaan = null;
 		$config['upload_path'] = './uploads/';
 		$config['allowed_types'] = 'pdf';
 		$config['max_size']  = '3000';
@@ -62,14 +99,46 @@ class MahasiswaController extends CI_Controller {
 		$this->upload->do_upload('file_mou');
 		$file_mou = $this->upload->data('file_name');
 
-		$config2['upload_path'] = './uploads/spk/';
-		$config2['allowed_types'] = 'pdf';
-		$config2['max_size']  = '3000';
-		$config2['encrypt_name'] = TRUE;
-		$this->upload->initialize($config2);
+		$config3['upload_path'] = './uploads/spk/';
+		$config3['allowed_types'] = 'pdf';
+		$config3['max_size']  = '3000';
+		$config3['encrypt_name'] = TRUE;
+		$this->upload->initialize($config3);
 		$this->upload->do_upload('file_spk');
 		$file_spk = $this->upload->data('file_name');
+
+		if($this->input->post('id_perusahaan') == "null" || $this->input->post('id_perusahaan') == NULL)
+		{
+			$dt_perusahaan = array(
+				'nama' => $this->input->post('nama_perusahaan'),
+				'alamat' => $this->input->post('alamat_perusahaan')
+	
+			);
+			$insert_perusahaan = $this->db->insert('perusahaan', $dt_perusahaan);
+			$nama_perusahaan = $this->input->post('nama_perusahaan');
+
+			$this->db->where('nama', $nama_perusahaan);
+			$get_prs = $this->db->get('perusahaan')->result();
+			$get_id_perusahaan = $get_prs[0]->id_perusahaan;
+		}else{
+			if($this->input->post('nama_perusahaan') != null) //jika id_perusahaan tidak kosong tapi nama perusahaan tidak kosong, maka yang dipilih yang nama perusahaan
+			{
+				$dt_perusahaan = array(
+					'nama' => $this->input->post('nama_perusahaan'),
+					'alamat' => $this->input->post('alamat_perusahaan')
 		
+				);
+				$insert_perusahaan = $this->db->insert('perusahaan', $dt_perusahaan);
+				$nama_perusahaan = $this->input->post('nama_perusahaan');
+	
+				$this->db->where('nama', $nama_perusahaan);
+				$get_prs = $this->db->get('perusahaan')->result();
+				$get_id_perusahaan = $get_prs[0]->id_perusahaan;
+			}else{
+				$get_id_perusahaan = $this->input->post('id_perusahaan');
+			}
+			
+		}
 		
 		if ( ! $this->upload->do_upload('file')){
 			$error = array('error' => $this->upload->display_errors());
@@ -87,25 +156,90 @@ class MahasiswaController extends CI_Controller {
 			$user = $this->AdminModels->getmahasiswa($id)->row();
 			
 			$data = array(
-				'mahasiswa_id' => $user->id_mahasiswa,
-				'kodeprodi' => $user->kodeprodi,
-				'namaAng1' => $this->input->post('anggota1'),
-				'namaAng2' => $this->input->post('anggota2'),
-				'nimAng1' => $this->input->post('nim1'),
-				'nimAng2' => $this->input->post('nim2'),
-				'prodi' => $this->input->post('prodi'),
-				'id_perusahaan' => $this->input->post('id_perusahaan'),
-				'tanggalMulai' => $this->input->post('durasi'),
-				'tanggalAkhir' => $this->input->post('exp_durasi'),
+				'nim_pengaju' => $user->nim,
+				'id_perusahaan' => $get_id_perusahaan,
+				'tanggal_mulai' => $this->input->post('durasi'),
+				'tanggal_akhir' => $this->input->post('exp_durasi'),
 				'file_pengajuan' => $file_pengajuan,
 				'file_mou'=> $file_mou,
 				'file_spk'=> $file_spk,
-				'create_at' => date('Y-m-d')
+				'created_at' => date('Y-m-d H:m:s'),
+				'status_penerimaan' => 'upload_proposal'
 			);
 			$this->AdminModels->ins('pengajuan_admin',$data);
+			$last_id = $this->db->insert_id();
+		
+
+			$data_anggota1 = $this->input->post('data_anggota1');
+			$data_anggota2 = $this->input->post('data_anggota2');
+			// var_dump($data_anggota1 != "null");
+			// die();
+			if($data_anggota1 != "null")
+			{
+				$this->db->where('nim', $data_anggota1);
+				$getDataAnggota1 = $this->db->get('mahasiswa')->result();
+				$dataAnggota1 = array(
+					'nim_anggota' => $getDataAnggota1[0]->nim,
+					'nama_anggota' => $getDataAnggota1[0]->nama,
+					'prodi_anggota' => $getDataAnggota1[0]->kodeprodi,
+					'id_pengajuan' => $last_id,
+					'created_at' => date('Y-m-d H:m:s'),
+		
+				);
+				$insert_anggota1 = $this->db->insert('pengajuan_admin_anggota', $dataAnggota1);
+				
+			}
+			if($data_anggota2 != 'null')
+			{
+				$this->db->where('nim', $data_anggota2);
+				$getDataAnggota2 = $this->db->get('mahasiswa')->result();
+				$dataAnggota2 = array(
+					'nim_anggota' => $getDataAnggota2[0]->nim,
+					'nama_anggota' => $getDataAnggota2[0]->nama,
+					'prodi_anggota' => $getDataAnggota2[0]->kodeprodi,
+					'id_pengajuan' => $last_id,
+					'created_at' => date('Y-m-d H:m:s'),
+		
+				);
+				$insert_anggota2 = $this->db->insert('pengajuan_admin_anggota', $dataAnggota2);
+	
+			}
+
+			$dataAnggota3 = array(
+				'nim_anggota' => $user->nim,
+				'nama_anggota' => $user->nama,
+				'prodi_anggota' => $user->kodeprodi,
+				'id_pengajuan' => $last_id,
+				'created_at' => date('Y-m-d H:m:s'),
+	
+			);
+			$insert_anggota3 = $this->db->insert('pengajuan_admin_anggota', $dataAnggota3);
+
+
 			redirect('MahasiswaController/addproposal');
 		}
 	}
+
+	public function detailProposal($id)
+	{
+		//data detil
+		$this->db->where('pengajuan_admin.id_pengajuan', $id);
+		$this->db->join('perusahaan','perusahaan.id_perusahaan=pengajuan_admin.id_perusahaan', 'left');
+		$this->db->join('pengajuan_pembimbing', 'pengajuan_pembimbing.id_pengajuan=pengajuan_admin.id_pengajuan','left');
+		$this->db->join('dosen', 'dosen.id_dosen=pengajuan_admin.id_pembimbing','left');
+		$this->db->select('pengajuan_admin.*, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan,pengajuan_pembimbing.status_laporan_pkl,pengajuan_pembimbing.file_laporan_pkl,
+						dosen.nip, dosen.nama as nama_pembimbing,dosen.nomortelpon as no_telp_pembimbing');
+		$data['detail'] = $this->db->get('pengajuan_admin')->row_array();
+
+		//data anggota selain nim pengaju
+		$this->db->where('id_pengajuan', $id);
+		$data['anggota'] = $this->db->get('pengajuan_admin_anggota')->result_array();
+
+
+		$data['tampilan_mahasiswa'] = "Mahasiswa/detailPengajuanProposal";
+		$this->load->view('Mahasiswa/Tview',$data);
+	}
+
 
 	public function addpembimbing()
 	{
@@ -174,6 +308,15 @@ class MahasiswaController extends CI_Controller {
 		force_download('uploads/mou/'.$nama_file, NULL);
 	}
 
+	public function downloadBalasanPerusahaan($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_admin');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_balasan_perusahaan;
+		force_download('uploads/balasan_perusahaan/'.$nama_file, NULL);
+	}
+
 	public function downloadSpk($id)
 	{
 		$this->db->where('id_pengajuan', $id);
@@ -183,6 +326,35 @@ class MahasiswaController extends CI_Controller {
 		force_download('uploads/spk/'.$nama_file, NULL);
 	}
 
+	
+	public function downloadLaporanPKL($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_pembimbing');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_laporan_pkl;
+		force_download('uploads/laporan_pkl/'.$nama_file, NULL);
+	}
+
+	public function downloadPengantarPKL($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_pembimbing');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_balasan_admin;
+		force_download('assets/balasan'.$nama_file, NULL);
+	}
+
+	public function downloadLembarPengesahan($id)
+	{
+		$this->db->where('id_pengajuan', $id);
+		$this->db->from('pengajuan_pembimbing');
+		$query = $this->db->get();
+		$nama_file = $query->row()->file_pengesahan;
+		force_download('uploads/lembar_pengesahan/'.$nama_file, NULL);
+	}
+
+	
 	public function updateFileProposal()
 	{
 		$config['upload_path'] = './uploads/';
@@ -269,6 +441,82 @@ class MahasiswaController extends CI_Controller {
 		force_download('assets/template/'.$filename, NULL);
 	}
 
+	public function uploadBalasanPerusahaan()
+	{
+		$balasan = $this->input->post('balasan_perusahaan');
+		// var_dump($balasan);
+		// die();
+		if($balasan == "y")
+		{
+			$config['upload_path'] = './uploads/balasan_perusahaan/';
+			$config['allowed_types'] = 'pdf';
+			$config['max_size'] = '3072';
+			$config['encrypt_name'] = TRUE;
+
+			$this->load->library('upload', $config);
+
+			if (! $this->upload->do_upload('file')){
+				$error = array('error' => $this->upload->display_error());
+				echo $this->upload->display_error();
+			}
+			else{
+
+				$data = array(
+					'file_balasan_perusahaan' => $this->upload->data('file_name'),
+					'status_penerimaan'	=> 'upload_balasan_perusahaan',
+					);
+				$this->AdminModels->upd('pengajuan_admin',$data,['id_pengajuan' => $this->input->post('id_pengajuan')]);
+				redirect('MahasiswaController/detailProposal/'.$this->input->post('id_pengajuan'));
+			}	
+
+		}else{
+			$data = array(
+				'status_penerimaan'	=> 'tidak_diterima_perusahaan');
+			$this->AdminModels->upd('pengajuan_admin',$data,['id_pengajuan' => $this->input->post('id_pengajuan')]);
+			redirect('MahasiswaController/detailProposal/'.$this->input->post('id_pengajuan'));
+		
+
+		}
+		
+	}
+
+	public function uploadLaporanPKL()
+	{
+	
+		$config['upload_path'] = './uploads/laporan_pkl/';
+		$config['allowed_types'] = 'pdf';
+		$config['max_size'] = '3072';
+		$config['encrypt_name'] = TRUE;
+
+		$this->load->library('upload', $config);
+
+		if (! $this->upload->do_upload('file')){
+			$error = array('error' => $this->upload->display_error());
+			echo $this->upload->display_error();
+		}
+		else{
+
+			$data = array(
+				'status_penerimaan'	=> 'upload_laporan_pkl',
+				);
+			$this->AdminModels->upd('pengajuan_admin',$data,['id_pengajuan' => $this->input->post('id_pengajuan')]);
+			
+			$this->db->where('id_pengajuan',$this->input->post('id_pengajuan'));
+			$getIdPembimbing = $this->db->get('pengajuan_admin')->row_array();
+			$data_pkl = array(
+				'id_pengajuan' => $this->input->post('id_pengajuan'),
+				'id_dosen' => $getIdPembimbing['id_pembimbing'],
+				'status_laporan_pkl' => '0',
+				'tanggal_acc_laporan_pkl' => date('Y-m-d H:m:s'),
+				'file_laporan_pkl' => $this->upload->data('file_name'),
+			);
+			$this->db->insert('pengajuan_pembimbing', $data_pkl);
+			redirect('MahasiswaController/detailProposal/'.$this->input->post('id_pengajuan'));
+		}	
+
+
+		
+	}
 
 }
 

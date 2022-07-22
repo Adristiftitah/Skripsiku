@@ -18,21 +18,27 @@ class AdminModels extends CI_Model {
             ->result();	
     }
 
-    public function pengajuan_admin($id)
+    public function pengajuan_admin()
 	{
-		$this->db->join('mahasiswa', 'pengajuan_admin.mahasiswa_id = mahasiswa.id_mahasiswa', 'left');
+		$this->db->join('mahasiswa', 'mahasiswa.nim = pengajuan_admin.nim_pengaju', 'left');
 		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
-		$this->db->select('pengajuan_admin.id_pengajuan,pengajuan_admin.file_pengajuan ,pengajuan_admin.file_balasan, pengajuan_admin.namaAng1, pengajuan_admin.namaAng2, pengajuan_admin.nimAng1, pengajuan_admin.nimAng2, 
-		pengajuan_admin.prodi, perusahaan.nama as nama_perusahaan, pengajuan_admin.tanggalMulai, pengajuan_admin.tanggalAkhir,pengajuan_admin.id_pembimbing,pengajuan_admin.create_at,
-		mahasiswa.nim, mahasiswa.nama as nama_mhs, mahasiswa.kodeprodi, mahasiswa.nomormhs, mahasiswa.nomorortu, mahasiswa.kelas, mahasiswa.user_id,perusahaan.alamat as alamat_perusahaan, pengajuan_admin.file_mou, pengajuan_admin.file_spk');
-		if($id != null){
-			$this->db->where('mahasiswa.user_id', $id);
-			// $this->db->where('pengajuan_admin.id_mahasiswa','mahasiswa.id_mahasiswa');
-		}
+		$this->db->select('pengajuan_admin.* , mahasiswa.nama as nama_pengaju, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan');
+		return $this->db->get('pengajuan_admin')->result_array();
+    
+    }
 
-		return $this->db->get('pengajuan_admin')->result();
-		// var_dump($data[0]->id_pengajuan);
+	public function getDataPengajuan($nim)
+	{
+		
+		$this->db->join('mahasiswa', 'mahasiswa.nim = pengajuan_admin.nim_pengaju', 'left');
+		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
+		$this->db->join('pengajuan_admin_anggota','pengajuan_admin_anggota.id_pengajuan=pengajuan_admin.id_pengajuan','left');
+		$this->db->where('pengajuan_admin_anggota.nim_anggota', $nim);
+		$this->db->select('pengajuan_admin.* , mahasiswa.nama as nama_pengaju, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan');
+		$data = $this->db->get('pengajuan_admin')->result_array();
+		// var_dump($data);
 		// die();
+		return $data;
     }
 
     public function cekdosenid($id)
@@ -179,15 +185,101 @@ class AdminModels extends CI_Model {
   //       }
     }
 
-    public function databimbingan()
-    {
-    	return $this->db->query("SELECT dosen.nama, mahasiswa.kodeprodi, count(pengajuan_pembimbing.dosen_id) as jumlah 
-    		FROM pengajuan_pembimbing 
-    		JOIN dosen ON pengajuan_pembimbing.dosen_id = dosen.id_dosen 
-    		JOIN mahasiswa ON pengajuan_pembimbing.nim = mahasiswa.nim 
-    		GROUP BY  dosen.nama, mahasiswa.kodeprodi")->result();
-    	
-    }
+	public function databimbingan()
+	{
+		$this->db->where('pengajuan_admin.id_pembimbing !=', '0');
+		$this->db->join('mahasiswa', 'pengajuan_admin.nim_pengaju = mahasiswa.id_mahasiswa', 'left');
+		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
+		$this->db->join('dosen', 'dosen.id_dosen=pengajuan_admin.id_pembimbing', 'left');
+		$this->db->select('pengajuan_admin.* , mahasiswa.nama as nama_pengaju, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan,dosen.nip,dosen.nama as nama_dosen');
+		return $this->db->get('pengajuan_admin')->result_array();
+		// return $this->db->query("SELECT dosen.nama, mahasiswa.kodeprodi, count(pengajuan_pembimbing.dosen_id) as jumlah 
+		// 	FROM pengajuan_pembimbing 
+		// 	JOIN dosen ON pengajuan_pembimbing.dosen_id = dosen.id_dosen 
+		// 	JOIN mahasiswa ON pengajuan_pembimbing.nim = mahasiswa.nim 
+		// 	GROUP BY  dosen.nama, mahasiswa.kodeprodi")->result();
+		
+	}
+
+	// Get DataTable data
+	function getPengajuanAdmin($postData=null){
+
+		$response = array();
+   
+		## Read value
+		$draw = $postData['draw'];
+		$start = $postData['start'];
+		$rowperpage = $postData['length']; // Rows display per page
+		$columnIndex = $postData['order'][0]['column']; // Column index
+		$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+   
+		// Custom search filter 
+		$searchDosen = $postData['searchDosen'];
+		
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+		if($searchValue != ''){
+		   $search_arr[] = " (id_pembimbing like '%".$searchValue."%' ) ";
+		}
+		if($searchDosen != ''){
+		   $search_arr[] = " id_pembimbing='".$searchDosen."' ";
+		}
+		
+		if(count($search_arr) > 0){
+		   $searchQuery = implode(" and ",$search_arr);
+		}
+   
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$records = $this->db->get('pengajuan_admin')->result();
+		$totalRecords = $records[0]->allcount;
+   
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		if($searchQuery != '')
+		$this->db->where($searchQuery);
+		$records = $this->db->get('pengajuan_admin')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+   
+		## Fetch records
+		$this->db->where('pengajuan_admin.id_pembimbing !=', '0');
+		$this->db->join('mahasiswa', 'pengajuan_admin.nim_pengaju = mahasiswa.id_mahasiswa', 'left');
+		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
+		$this->db->join('dosen', 'dosen.id_dosen=pengajuan_admin.id_pembimbing', 'left');
+		$this->db->select('pengajuan_admin.* , mahasiswa.nama as nama_pengaju, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan,dosen.nip,dosen.nama as nama_dosen');
+		
+		if($searchQuery != '')
+		$this->db->where($searchQuery);
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('pengajuan_admin')->result();
+   
+		$data = array();
+	
+		foreach($records as $record ){
+		
+
+			$data[] = array( 
+			"nama_dosen"=>$record->nama_dosen . "<br/> NIP.". $record->nip,
+			"nama_perusahaan"=>$record->nama_perusahaan ."<br/> Alamat : ". $record->alamat_perusahaan,
+			"detail"=> "<a href ='".base_url()."index.php/DashboardAdmin/detailLaporan/".$record->id_pengajuan."' class='btn btn-primary'>Detail</a> ",
+			); 
+		}
+   
+		## Response
+		$response = array(
+		  "draw" => intval($draw),
+		  "iTotalRecords" => $totalRecords,
+		  "iTotalDisplayRecords" => $totalRecordwithFilter,
+		  "aaData" => $data
+		);
+   
+		return $response; 
+	  }
+   
 
     public function upd($t, $data, $w)
     {
@@ -222,6 +314,13 @@ class AdminModels extends CI_Model {
     	
     }
 
+	public function getAllMahasiswa()
+    {
+		$this->db->where('user_id !=', $this->session->userdata('id_users'));
+    	return $this->db->get('mahasiswa')->result();
+    	
+    }
+
     public function ins($t, $data)
     {
     	$this->db->insert($t, $data);
@@ -243,12 +342,11 @@ class AdminModels extends CI_Model {
 
 	public function pengajuan_admin_dosen($id)
 	{
-		$this->db->join('mahasiswa', 'pengajuan_admin.mahasiswa_id = mahasiswa.id_mahasiswa', 'left');
-		if($id != null){
-			$this->db->where('id_pembimbing', $id);
-		}
-	
-		return $this->db->get('pengajuan_admin')->result();
+		$this->db->where('pengajuan_admin.id_pembimbing', $id);
+		$this->db->join('mahasiswa', 'pengajuan_admin.nim_pengaju = mahasiswa.id_mahasiswa', 'left');
+		$this->db->join('perusahaan', 'perusahaan.id_perusahaan = pengajuan_admin.id_perusahaan', 'left');
+		$this->db->select('pengajuan_admin.* , mahasiswa.nama as nama_pengaju, perusahaan.nama as nama_perusahaan, perusahaan.alamat as alamat_perusahaan');
+		return $this->db->get('pengajuan_admin')->result_array();
     }
 
 }

@@ -119,7 +119,7 @@
                         <input type="text" class="form-control form-control-user" id="exampleInputNumber" value="<?= $dt->nomortelpon ?>" name="nomordsn"/>
                     </div>
                                             
-                    <input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Ubah Data" id="submit"/>
+                    <input type="submit" class="btn btn-primary btn-user btn-block" name="submit" value="Ubah Data" id="submit"/> 
                     <input type="submit" class="btn btn-warning btn-user btn-block" name="submit" value="Batal" id="submit"/>
 
                                             

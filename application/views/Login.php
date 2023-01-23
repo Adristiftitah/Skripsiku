@@ -59,7 +59,7 @@
                                         <!-- <a href="index.html" class="btn btn-primary btn-user btn-block">
                                             Login
                                         </a> -->
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">Login</button>
+                                        <button type="submit" class="btn btn-danger btn-user btn-block">Login</button>
                                         <?php echo form_close(); ?>
                                     
                                     <hr>

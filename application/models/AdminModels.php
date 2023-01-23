@@ -17,6 +17,7 @@ class AdminModels extends CI_Model {
 		return $this->db->get('users')
             ->result();	
     }
+	
 
     public function pengajuan_admin()
 	{
@@ -316,8 +317,27 @@ class AdminModels extends CI_Model {
 
 	public function getAllMahasiswa()
     {
-		$this->db->where('user_id !=', $this->session->userdata('id_users'));
-    	return $this->db->get('mahasiswa')->result();
+		
+		$this->db->where('pengajuan_admin.status_penerimaan !=','tidak_diterima_perusahaan');
+		$this->db->join('pengajuan_admin_anggota','pengajuan_admin_anggota.nim_anggota=mahasiswa.nim','left');
+		$this->db->join('pengajuan_admin', 'pengajuan_admin.id_pengajuan=pengajuan_admin_anggota.id_pengajuan', 'left');
+		$this->db->select('mahasiswa.nim');
+		$this->db->distinct();
+		$x=$this->db->get('mahasiswa')->result_array();
+		
+		$y=[];
+		foreach ($x as $key => $x) {
+			array_push($y, $x['nim']);
+		}
+		// var_dump($y['nim']);
+		// die;
+	 	$this->db->where('mahasiswa.user_id !=', $this->session->userdata('id_users'));
+		$this->db->where_not_in('mahasiswa.nim',$y);
+		
+    	$z= $this->db->get('mahasiswa')->result();
+		return $z;
+		//var_dump($z);
+		//die();
     	
     }
 

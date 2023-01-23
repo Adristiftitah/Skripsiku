@@ -35,8 +35,8 @@
                         <td><?php echo $ph->qty; ?></td>
                         <td><?php echo $ph->penanggung_jawab; ?></td>
                         <td>
-                            <a  data-toggle="modal" data-target="#ubah-data<?php echo $ph->id_perusahaan ?>" class="btn btn-info">Ubah</a>
-                            <a href="<?= base_url('index.php/DashboardAdmin/perusahaandelete/') . $ph->id_perusahaan; ?>" class="btn btn-danger">Hapus</a>
+                            <a  data-toggle="modal" data-target="#ubah-data<?php echo $ph->id_perusahaan ?>" class="btn btn-info"><i class="fa fa-pen"></i></a>
+                            <a href="<?= base_url('index.php/DashboardAdmin/perusahaandelete/') . $ph->id_perusahaan; ?>" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                     <?php } ?>
@@ -119,7 +119,7 @@
 </div>
 <div class="form-group ">
     <label>Alamat</label>
-    <textarea class="form-control" value="<?= $ph->alamat ?>" name="alamat"></textarea>                    
+    <textarea class="form-control" name="alamat"><?= $ph->alamat ?></textarea>                    
 </div> 
   <div class="form-group ">
     <input type="text" class="form-control form-control-user" id="exampleInputNIP" value="<?= $ph->penanggung_jawab ?>" name="penanggung_jawab"/>
